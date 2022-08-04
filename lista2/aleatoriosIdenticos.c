@@ -13,17 +13,10 @@ typedef struct item
     int qnt;
 } item;
 
-typedef struct retorno
-{
-    int vet[100000];
-    int qnt;
-} retorno;
-
 void *encontraSeed(void *args)
 {
 
     item recebi = *((item *)args);
-    retorno *ret = malloc(sizeof(retorno));
     int qnt = 0;
     for (unsigned int i = recebi.inicio; i <= recebi.fim; i++)
     {
@@ -44,7 +37,7 @@ void *encontraSeed(void *args)
         }
     }
     ((item *)args)->qnt = qnt;
-    return (void *)ret;
+    return;
 }
 
 int main()
@@ -55,7 +48,6 @@ int main()
     pthread_t t[QNTThread];
 
     item entrada[QNTThread];
-    retorno saida[QNTThread];
 
     scanf(" %d %d %d", &inicio, &fim, &S);
 
@@ -74,7 +66,7 @@ int main()
     for (int i = 0; i < QNTThread; i++)
     {
         // printf(".");
-        pthread_join(t[i], (void *)&saida[i]);
+        pthread_join(t[i], NULL);
     }
 
     for (int i = 0; i < QNTThread; i++)
