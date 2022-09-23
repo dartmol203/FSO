@@ -7,10 +7,8 @@
 
 typedef struct parametro_thread
 {
-    int *n;
-    int tid;
+    int n;
     int result;
-    int qnt;
 } parametro_thread;
 
 int printa(int num, double raiz)
@@ -38,50 +36,21 @@ int printa(int num, double raiz)
 void *calcula_quase_primo_maluco(void *parameter)
 {
     parametro_thread *param = parameter;
-    for (int i = 0; i < param->qnt; i++)
-    {
 
-        // printf("\t%d \n", param->n[i]);
-        if (param->n[i] <= 508079)
-        {
-            param->n[i] = 508079;
-        }
-        else
-        {
-            if (param->n[i] % 2 == 0)
-            {
-                param->n[i] += 1;
-                // printf("\t\t%d \n", param->n[i]);
-            }
-            double raiz = sqrt((double)param->n[i]);
-            param->n[i] = printa(param->n[i], raiz);
-        }
+    // printf("\t%d \n", param->n[i]);
+    if (param->n <= 508079)
+    {
+        param->n = 508079;
     }
-
-    pthread_exit(NULL);
-}
-
-void calcula_quase_primo_maluco2(void *parameter)
-{
-    parametro_thread *param = parameter;
-    for (int i = 0; i < param->qnt; i++)
+    else
     {
-
-        // printf("\t%d \n", param->n[i]);
-        if (param->n[i] <= 508079)
+        if (param->n % 2 == 0)
         {
-            param->n[i] = 508079;
+            param->n += 1;
+            // printf("\t\t%d \n", param->n[i]);
         }
-        else
-        {
-            if (param->n[i] % 2 == 0)
-            {
-                param->n[i] += 1;
-                // printf("\t\t%d \n", param->n[i]);
-            }
-            double raiz = sqrt((double)param->n[i]);
-            param->n[i] = printa(param->n[i], raiz);
-        }
+        double raiz = sqrt((double)param->n);
+        param->result = printa(param->n, raiz);
     }
 }
 
@@ -95,42 +64,34 @@ int main(void)
     parametro_thread PARAMETRO_B;
     parametro_thread PARAMETRO_C;
 
-    PARAMETRO_A.n = malloc(sizeof(int) * (qtd / 3) + 1);
-    PARAMETRO_B.n = malloc(sizeof(int) * (qtd / 3) + 1);
-    PARAMETRO_C.n = malloc(sizeof(int) * (qtd / 3) + 1);
-    PARAMETRO_A.qnt = 0;
-    PARAMETRO_B.qnt = 0;
-    PARAMETRO_C.qnt = 0;
-    while (i != qtd)
-    {
-        scanf(" %d", &PARAMETRO_A.n[PARAMETRO_A.qnt++]);
-        i++;
-        if (i != qtd)
-        {
-            scanf(" %d", &PARAMETRO_B.n[PARAMETRO_B.qnt++]);
-            i++;
-        }
-        if (i != qtd)
-        {
-            scanf(" %d", &PARAMETRO_C.n[PARAMETRO_C.qnt++]);
-            i++;
-        }
-    }
     pthread_t tid, tid2;
-
-    pthread_create(&tid, NULL, calcula_quase_primo_maluco, &PARAMETRO_A);
-    pthread_create(&tid2, NULL, calcula_quase_primo_maluco, &PARAMETRO_B);
-    calcula_quase_primo_maluco2(&PARAMETRO_C);
-    pthread_join(tid, NULL);
-    pthread_join(tid2, NULL);
-
-    for (int i = 0; i < PARAMETRO_A.qnt; i++)
+    while (qtd % 3 != 0)
     {
-        printf("%d\n", PARAMETRO_A.n[i]);
-        if (i < PARAMETRO_B.qnt)
-            printf("%d\n", PARAMETRO_B.n[i]);
-        if (i < PARAMETRO_C.qnt)
-            printf("%d\n", PARAMETRO_C.n[i]);
+        scanf(" %d", &PARAMETRO_C.n);
+        qtd--;
+        calcula_quase_primo_maluco(&PARAMETRO_C);
+        printf("%d\n", PARAMETRO_C.result);
     }
+    while (qtd > 0)
+    {
+        scanf(" %d", &PARAMETRO_A.n);
+
+        scanf(" %d", &PARAMETRO_B.n);
+
+        scanf(" %d", &PARAMETRO_C.n);
+
+        pthread_create(&tid, NULL, calcula_quase_primo_maluco, &PARAMETRO_A);
+        pthread_create(&tid2, NULL, calcula_quase_primo_maluco, &PARAMETRO_B);
+        calcula_quase_primo_maluco(&PARAMETRO_C);
+        pthread_join(tid, NULL);
+        pthread_join(tid2, NULL);
+
+        printf("%d\n", PARAMETRO_A.result);
+        printf("%d\n", PARAMETRO_B.result);
+        printf("%d\n", PARAMETRO_C.result);
+
+        qtd -= 3;
+    }
+
     return 0;
 }
