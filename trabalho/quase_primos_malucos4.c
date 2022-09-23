@@ -13,8 +13,6 @@ typedef struct parametro_thread
 
 int ehquaseprimo(int num, float raiz)
 {
-    if (num % 2 == 0)
-        return 0;
 
     int cnt = 0;
     for (int i = 3; i < raiz; i += 2)
@@ -41,12 +39,14 @@ void *quaseprimo(void *arg)
     {
         while (1)
         {
+            if (num % 2 == 0)
+                num++;
             if (ehquaseprimo(num, floor(sqrt(num))))
             {
                 param->result = num;
                 break;
             }
-            num++;
+            num += 2;
         }
     }
 }
