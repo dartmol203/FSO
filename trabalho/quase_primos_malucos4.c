@@ -37,7 +37,6 @@ void *calcula_quase_primo_maluco(void *parameter)
 {
     parametro_thread *param = parameter;
 
-    // printf("\t%d \n", param->n[i]);
     if (param->n <= 508079)
     {
         param->n = 508079;
@@ -47,7 +46,6 @@ void *calcula_quase_primo_maluco(void *parameter)
         if (param->n % 2 == 0)
         {
             param->n += 1;
-            // printf("\t\t%d \n", param->n[i]);
         }
         double raiz = sqrt((double)param->n);
         param->result = printa(param->n, raiz);
@@ -56,40 +54,39 @@ void *calcula_quase_primo_maluco(void *parameter)
 
 int main(void)
 {
-    int qtd, i = 0;
+    int qtd;
 
     scanf("%d", &qtd);
 
     parametro_thread PARAMETRO[3];
 
     pthread_t tid[2];
-    while (qtd % 3 != 0)
+    while (1)
     {
-        scanf(" %d", &PARAMETRO[qtd % 3].n);
-        pthread_create(&tid[qtd % 3], NULL, calcula_quase_primo_maluco, &PARAMETRO[qtd % 3]);
-        pthread_join(tid[qtd % 3], NULL);
-        printf("%d\n", PARAMETRO[qtd % 3].result);
-        qtd--;
-    }
-    while (qtd > 0)
-    {
-        scanf(" %d", &PARAMETRO[0].n);
-
-        scanf(" %d", &PARAMETRO[1].n);
-
-        scanf(" %d", &PARAMETRO[2].n);
-
+        if (scanf(" %d", &PARAMETRO[0].n) == EOF)
+        {
+            break;
+        }
         pthread_create(&tid[0], NULL, calcula_quase_primo_maluco, &PARAMETRO[0]);
-        pthread_create(&tid[1], NULL, calcula_quase_primo_maluco, &PARAMETRO[1]);
-        calcula_quase_primo_maluco(&PARAMETRO[2]);
         pthread_join(tid[0], NULL);
-        pthread_join(tid[1], NULL);
-
         printf("%d\n", PARAMETRO[0].result);
-        printf("%d\n", PARAMETRO[1].result);
-        printf("%d\n", PARAMETRO[2].result);
 
-        qtd -= 3;
+        if (scanf(" %d", &PARAMETRO[1].n) == EOF)
+        {
+            break;
+        }
+
+        pthread_create(&tid[1], NULL, calcula_quase_primo_maluco, &PARAMETRO[1]);
+        pthread_join(tid[1], NULL);
+        printf("%d\n", PARAMETRO[1].result);
+
+        if (scanf(" %d", &PARAMETRO[2].n) == EOF)
+        {
+            break;
+        }
+
+        calcula_quase_primo_maluco(&PARAMETRO[2]);
+        printf("%d\n", PARAMETRO[2].result);
     }
 
     return 0;
