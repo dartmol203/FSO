@@ -60,35 +60,34 @@ int main(void)
 
     scanf("%d", &qtd);
 
-    parametro_thread PARAMETRO_A;
-    parametro_thread PARAMETRO_B;
-    parametro_thread PARAMETRO_C;
+    parametro_thread PARAMETRO[3];
 
-    pthread_t tid, tid2;
+    pthread_t tid[2];
     while (qtd % 3 != 0)
     {
-        scanf(" %d", &PARAMETRO_C.n);
+        scanf(" %d", &PARAMETRO[qtd % 3].n);
+        pthread_create(&tid[qtd % 3], NULL, calcula_quase_primo_maluco, &PARAMETRO[qtd % 3]);
+        pthread_join(tid[qtd % 3], NULL);
+        printf("%d\n", PARAMETRO[qtd % 3].result);
         qtd--;
-        calcula_quase_primo_maluco(&PARAMETRO_C);
-        printf("%d\n", PARAMETRO_C.result);
     }
     while (qtd > 0)
     {
-        scanf(" %d", &PARAMETRO_A.n);
+        scanf(" %d", &PARAMETRO[0].n);
 
-        scanf(" %d", &PARAMETRO_B.n);
+        scanf(" %d", &PARAMETRO[1].n);
 
-        scanf(" %d", &PARAMETRO_C.n);
+        scanf(" %d", &PARAMETRO[2].n);
 
-        pthread_create(&tid, NULL, calcula_quase_primo_maluco, &PARAMETRO_A);
-        pthread_create(&tid2, NULL, calcula_quase_primo_maluco, &PARAMETRO_B);
-        calcula_quase_primo_maluco(&PARAMETRO_C);
-        pthread_join(tid, NULL);
-        pthread_join(tid2, NULL);
+        pthread_create(&tid[0], NULL, calcula_quase_primo_maluco, &PARAMETRO[0]);
+        pthread_create(&tid[1], NULL, calcula_quase_primo_maluco, &PARAMETRO[1]);
+        calcula_quase_primo_maluco(&PARAMETRO[2]);
+        pthread_join(tid[0], NULL);
+        pthread_join(tid[1], NULL);
 
-        printf("%d\n", PARAMETRO_A.result);
-        printf("%d\n", PARAMETRO_B.result);
-        printf("%d\n", PARAMETRO_C.result);
+        printf("%d\n", PARAMETRO[0].result);
+        printf("%d\n", PARAMETRO[1].result);
+        printf("%d\n", PARAMETRO[2].result);
 
         qtd -= 3;
     }
