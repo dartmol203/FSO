@@ -1,6 +1,6 @@
-
 #include <math.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -54,79 +54,57 @@ void *quaseprimo(void *arg)
 int main(void)
 {
     int qtd;
+    parametro_thread Parametro_A;
+    parametro_thread Parametro_B;
+    parametro_thread Parametro_C;
+    pthread_t tid;
+    pthread_t tid2;
 
     scanf("%d", &qtd);
-
-    parametro_thread PARAMETRO[3];
-
-    pthread_t tid[2];
 
     while (qtd > 0)
     {
         if (qtd >= 3)
         {
+            scanf("%d", &Parametro_A.n);
+            pthread_create(&tid, NULL, quaseprimo, &Parametro_A);
 
-            if ((scanf(" %d", &PARAMETRO[0].n)) == EOF)
-            {
-                break;
-            }
+            scanf("%d", &Parametro_B.n);
+            pthread_create(&tid2, NULL, quaseprimo, &Parametro_B);
 
-            pthread_create(&tid[0], NULL, quaseprimo, &PARAMETRO[0]);
-            pthread_join(tid[0], NULL);
-            printf("%d\n", PARAMETRO[0].result);
+            scanf("%d", &Parametro_C.n);
+            quaseprimo(&Parametro_C);
 
-            if ((scanf(" %d", &PARAMETRO[1].n)) == EOF)
-            {
-                break;
-            }
+            pthread_join(tid, NULL);
+            pthread_join(tid2, NULL);
 
-            pthread_create(&tid[1], NULL, quaseprimo, &PARAMETRO[1]);
-            pthread_join(tid[1], NULL);
-            printf("%d\n", PARAMETRO[1].result);
-
-            if ((scanf(" %d", &PARAMETRO[2].n)) == EOF)
-            {
-                break;
-            }
-
-            quaseprimo(&PARAMETRO[2]);
-            printf("%d\n", PARAMETRO[2].result);
+            printf("%d\n", Parametro_A.result);
+            printf("%d\n", Parametro_B.result);
+            printf("%d\n", Parametro_C.result);
             qtd -= 3;
         }
         else if (qtd == 2)
         {
-            if ((scanf(" %d", &PARAMETRO[0].n)) == EOF)
-            {
-                break;
-            }
+            scanf("%d", &Parametro_A.n);
+            pthread_create(&tid, NULL, quaseprimo, &Parametro_A);
 
-            pthread_create(&tid[0], NULL, quaseprimo, &PARAMETRO[0]);
-            pthread_join(tid[0], NULL);
-            printf("%d\n", PARAMETRO[0].result);
+            scanf("%d", &Parametro_C.n);
+            quaseprimo(&Parametro_C);
 
-            if ((scanf(" %d", &PARAMETRO[1].n)) == EOF)
-            {
-                break;
-            }
-
-            pthread_create(&tid[1], NULL, quaseprimo, &PARAMETRO[1]);
-            pthread_join(tid[1], NULL);
-            printf("%d\n", PARAMETRO[1].result);
+            pthread_join(tid, NULL);
+            printf("%d\n", Parametro_A.result);
+            printf("%d\n", Parametro_C.result);
 
             qtd -= 2;
         }
-        else
+        else if (qtd < 2)
         {
-            if ((scanf(" %d", &PARAMETRO[0].n)) == EOF)
-            {
-                break;
-            }
-
-            pthread_create(&tid[0], NULL, quaseprimo, &PARAMETRO[0]);
-            pthread_join(tid[0], NULL);
-            printf("%d\n", PARAMETRO[0].result);
+            scanf("%d", &Parametro_C.n);
+            quaseprimo(&Parametro_C);
+            printf("%d\n", Parametro_C.result);
             qtd--;
         }
     }
+
     return 0;
 }
