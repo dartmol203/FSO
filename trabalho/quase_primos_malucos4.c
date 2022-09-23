@@ -1,7 +1,6 @@
 
 #include <math.h>
 #include <stdio.h>
-#include <stdbool.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <unistd.h>
