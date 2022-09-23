@@ -55,8 +55,6 @@ void *calcula_quase_primo_maluco(void *parameter)
 
 int ehquaseprimo(int num, float raiz)
 {
-    if (num % 2 == 0)
-        return 0;
 
     int cnt = 0;
     for (int i = 3; i < raiz; i += 2)
@@ -72,25 +70,30 @@ int ehquaseprimo(int num, float raiz)
     return 0;
 }
 
-void *quaseprimo(void *arg)
+void *verificaProxQuaseprimo(void *parametro)
 {
-    parametro_thread *param = arg;
+    parametro_thread *param = parametro;
     int num = (param->n) + 1;
 
     if (num <= 508079)
         param->result = 508079;
     else
     {
+        if (num % 2 == 0)
+        {
+            num++;
+        }
         while (1)
         {
             if (ehquaseprimo(num, floor(sqrt(num))))
             {
                 param->result = num;
-                break;
+                return;
             }
             num++;
         }
     }
+    return NULL;
 }
 
 int main(void)
@@ -99,85 +102,54 @@ int main(void)
 
     scanf("%d", &qtd);
 
-    parametro_thread PARAMETRO[3];
+    parametro_thread param1, param2, param3;
 
-    pthread_t tid[2];
-    /*
-    while (1)
-    {
-        if (scanf(" %d", &PARAMETRO[0].n) == EOF)
-        {
-            break;
-        }
-        pthread_create(&tid[0], NULL, quaseprimo, &PARAMETRO[0]);
-        pthread_join(tid[0], NULL);
-        printf("%d\n", PARAMETRO[0].result);
-
-        if (scanf(" %d", &PARAMETRO[1].n) == EOF)
-        {
-            break;
-        }
-
-        pthread_create(&tid[1], NULL, quaseprimo, &PARAMETRO[1]);
-        pthread_join(tid[1], NULL);
-        printf("%d\n", PARAMETRO[1].result);
-
-        if (scanf(" %d", &PARAMETRO[2].n) == EOF)
-        {
-            break;
-        }
-
-        quaseprimo(&PARAMETRO[2]);
-        printf("%d\n", PARAMETRO[2].result);
-    }
-    */
+    pthread_t tid1, tid2;
 
     while (qtd > 0)
     {
         if (qtd >= 3)
         {
 
-            scanf(" %d", &PARAMETRO[0].n);
+            scanf(" %d", &param1.n);
 
-            pthread_create(&tid[0], NULL, quaseprimo, &PARAMETRO[0]);
-            pthread_join(tid[0], NULL);
-            printf("%d\n", PARAMETRO[0].result);
+            pthread_create(&tid1, NULL, verificaProxQuaseprimo, &param1);
+            pthread_join(tid1, NULL);
+            printf("%d\n", param1.result);
 
-            scanf(" %d", &PARAMETRO[1].n);
+            scanf(" %d", &param2.n);
 
-            pthread_create(&tid[1], NULL, quaseprimo, &PARAMETRO[1]);
-            pthread_join(tid[1], NULL);
-            printf("%d\n", PARAMETRO[1].result);
+            pthread_create(&tid2, NULL, verificaProxQuaseprimo, &param2);
+            pthread_join(tid2, NULL);
+            printf("%d\n", param2.result);
 
-            scanf(" %d", &PARAMETRO[2].n);
+            scanf(" %d", &param3.n);
 
-            quaseprimo(&PARAMETRO[2]);
-            printf("%d\n", PARAMETRO[2].result);
+            verificaProxQuaseprimo(&param3);
+            printf("%d\n", param3.result);
             qtd -= 3;
         }
         else if (qtd == 2)
         {
-            scanf(" %d", &PARAMETRO[0].n);
+            scanf(" %d", &param1.n);
 
-            pthread_create(&tid[0], NULL, quaseprimo, &PARAMETRO[0]);
-            pthread_join(tid[0], NULL);
-            printf("%d\n", PARAMETRO[0].result);
+            pthread_create(&tid1, NULL, verificaProxQuaseprimo, &param1);
+            pthread_join(tid1, NULL);
+            printf("%d\n", param1.result);
 
-            scanf(" %d", &PARAMETRO[1].n);
+            scanf(" %d", &param3.n);
 
-            pthread_create(&tid[1], NULL, quaseprimo, &PARAMETRO[1]);
-            pthread_join(tid[1], NULL);
-            printf("%d\n", PARAMETRO[1].result);
+            verificaProxQuaseprimo(&param3);
+            printf("%d\n", param3.result);
 
             qtd -= 2;
         }
         else
         {
-            scanf(" %d", &PARAMETRO[0].n);
+            scanf(" %d", &param3.n);
 
-            pthread_create(&tid[0], NULL, quaseprimo, &PARAMETRO[0]);
-            pthread_join(tid[0], NULL);
-            printf("%d\n", PARAMETRO[0].result);
+            verificaProxQuaseprimo(&param3);
+            printf("%d\n", param3.result);
             qtd--;
         }
     }
